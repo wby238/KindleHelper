@@ -196,12 +196,12 @@
             // label_downloadinfo
             // 
             this.label_downloadinfo.AutoSize = true;
-            this.label_downloadinfo.Location = new System.Drawing.Point(75, 337);
+            this.label_downloadinfo.Location = new System.Drawing.Point(75, 319);
             this.label_downloadinfo.Name = "label_downloadinfo";
             this.label_downloadinfo.Size = new System.Drawing.Size(179, 12);
             this.label_downloadinfo.TabIndex = 16;
             this.label_downloadinfo.Text = "正在下载:第三百章 111/999 95%";
-            this.label_downloadinfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_downloadinfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_downloadinfo.Visible = false;
             // 
             // backgroundworker_download
@@ -216,7 +216,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(511, 538);
+            this.ClientSize = new System.Drawing.Size(511, 539);
             this.Controls.Add(this.label_downloadinfo);
             this.Controls.Add(this.progressbar_download);
             this.Controls.Add(this.listview_chapers);

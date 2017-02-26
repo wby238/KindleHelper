@@ -43,7 +43,8 @@ namespace libZhuishu
         /// <returns></returns>
         public static MixTocInfo getMixToc(string bookid)
         {
-            string host = string.Format("http://api.zhuishushenqi.com/mix-toc/{0}",bookid);
+            //string host = string.Format("http://api.zhuishushenqi.com/mix-toc/{0}",bookid);
+            string host = string.Format("http://api.zhuishushenqi.com/mix-atoc/{0}", bookid);
             var ret = HttpHelper.GET_JsonObject(host);
             var ok = ret["ok"].ToObject<bool>();
             if (ok) {
@@ -60,7 +61,8 @@ namespace libZhuishu
         /// <returns></returns>
         public static TocSummmaryInfo[] getTocSummary(string bookid)
         {
-            string host = string.Format("http://api.zhuishushenqi.com/toc?view=summary&book=" + bookid);
+            //string host = string.Format("http://api.zhuishushenqi.com/toc?view=summary&book=" + bookid);
+            string host = string.Format("http://api.zhuishushenqi.com/atoc?view=summary&book=" + bookid);
             var ret = HttpHelper.GET_JsonArray(host);
             List<TocSummmaryInfo> infoList = new List<TocSummmaryInfo>();
             foreach (var summray in ret) {
@@ -78,7 +80,8 @@ namespace libZhuishu
 
         public static TocChaperListInfo getChaperList(string tocid)
         {
-            string host = string.Format("http://api.zhuishushenqi.com/toc/{0}?view=chapters",tocid);
+            //string host = string.Format("http://api.zhuishushenqi.com/toc/{0}?view=chapters",tocid);
+            string host = string.Format("http://api.zhuishushenqi.com/atoc/{0}?view=chapters", tocid);
             var ret = HttpHelper.GET_JsonObject(host);
             return ret.ToObject<TocChaperListInfo>();
         }
@@ -89,8 +92,9 @@ namespace libZhuishu
         /// <returns></returns>
         public static ChapterInfo getChapter(string chaperLink)
         {
-            int timestamp = ConvertDateTimeInt(DateTime.Now);
-            string host = string.Format("http://chapter2.zhuishushenqi.com/chapter/{0}?k=2124b73d7e2e1945&t={1}", chaperLink,timestamp);
+            //int timestamp = ConvertDateTimeInt(DateTime.Now);
+            //string host = string.Format("http://chapter2.zhuishushenqi.com/chapter/{0}?k=2124b73d7e2e1945&t={1}", chaperLink,timestamp);
+            string host = string.Format("http://chapter2.zhuishushenqi.com/chapter/{0}", System.Web.HttpUtility.UrlEncode(chaperLink));
             var ret = HttpHelper.GET_JsonObject(host);
             var ok = ret["ok"].ToObject<bool>();
             if (ok) {
@@ -116,7 +120,7 @@ namespace libZhuishu
 
 
 
-
+        /*
         /// <summary>  
         /// DateTime时间格式转换为Unix时间戳格式  
         /// </summary>  
@@ -127,5 +131,6 @@ namespace libZhuishu
             System.DateTime startTime = TimeZone.CurrentTimeZone.ToLocalTime(new System.DateTime(1970, 1, 1));
             return (int)(time - startTime).TotalSeconds;
         }
+        */
     }
 }

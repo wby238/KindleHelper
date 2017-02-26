@@ -131,7 +131,8 @@ namespace KindleHelper
             }
 
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "文本文件（*.txt）|*.txt|Kindel（*.mobi）|*.mobi";
+            //sfd.Filter = "文本文件（*.txt）|*.txt|Kindel（*.mobi）|*.mobi";
+            sfd.Filter = "Kindel（*.mobi）|*.mobi|文本文件（*.txt）|*.txt";
             sfd.FilterIndex = 0;
             sfd.FileName = mBook.title;
             sfd.RestoreDirectory = true;
@@ -178,27 +179,41 @@ namespace KindleHelper
                 if (backgroundworker_download.CancellationPending) return;
                 var chapter = chapters[i];
                 float progress = (float)(i + 1) / (float)chapters.Length;
-                string info = string.Format("正在下载:{0} {1}/{2} {3:F2}%", chapter.title, i + 1, chapters.Length,
-                   progress * 100);
+                //string info = string.Format("正在下载:{0} {1}/{2} {3:F2}%", chapter.title, i + 1, chapters.Length,
+                //   progress * 100);
+                string info = string.Format("正在下载:{0}\n当前进度:{1}/{2} {3:F2}%", chapter.title, i + 1, chapters.Length, progress * 100);
                 backgroundworker_download.ReportProgress(i, info);
 
                 while (true) {
                     bool downloadSucess = false;
+                    string errMsg = "";
                     for (int j = 0; j < 3; j++) {
                         try {
                             var chapterInfo = LibZhuiShu.getChapter(chapter.link);
                             if (chapterInfo != null) {
+                                chapterInfo.title = chapter.title;
                                 chaperInfoList.Add(chapterInfo);
                                 downloadSucess = true;
                                 break;
                             }
-                        } catch (Exception exc) { }
+                        } catch(Exception ex) {
+                            errMsg = ex.Message;
+                        }
                     }
                     if (!downloadSucess) {
-                        var result = MessageBox.Show("章节 " + chapter.title + " 下载失败,是否重试?", "下载失败", MessageBoxButtons.YesNo);
-                        if (result != DialogResult.Yes) {
+                        var result = MessageBox.Show(errMsg, "章节 " + chapter.title + " 下载失败", MessageBoxButtons.AbortRetryIgnore);
+                        if (result == DialogResult.Abort) {
                             return;
+                        } else if (result == DialogResult.Ignore) {
+                            var emptyChaper = new ChapterInfo();
+                            emptyChaper.title = chapter.title;
+                            //emptyChaper.body = "本章下载失败了，失败原因:\n " + errMsg;
+                            emptyChaper.body = string.Format("1.本章下载失败了，失败原因:\r\n    {0}\r\n2.原始章节链接为:{1}\r\n3.追书章节链接为:{2}\r\n", errMsg, chapter.link, System.Web.HttpUtility.UrlEncode(chapter.link));
+                            chaperInfoList.Add(emptyChaper);
+                            downloadSucess = true;
+                            break;
                         }
+
                     } else {
                         break;
                     }
@@ -215,6 +230,7 @@ namespace KindleHelper
                 Kindlegen.book2Txt(book,savePath);
             } else if (ext.ToLower() == ".mobi") {
                 Kindlegen.book2Mobi(book, savePath);
+                Kindlegen.book2Txt(book, savePath.Replace(".mobi",".txt"));
             }
             MessageBox.Show("下载完成,文件保存在:" + savePath);
         }
